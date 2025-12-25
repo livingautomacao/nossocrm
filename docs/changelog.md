@@ -30,6 +30,7 @@
   - UX (Boards): preview/criação via **IA** agora normaliza cores das colunas usando uma **paleta fixa** (Tailwind não gera classes dinâmicas vindas da IA em runtime), garantindo que os boards gerados venham com cores visíveis.
   - UX (Modais): overlay de modal agora usa **z-index alto** para nunca ficar atrás da sidebar; “Refinar com IA” foi reduzido para não parecer página cheia.
   - UX (Deals): `DealDetailModal` agora **fecha ao clicar fora** (backdrop click) e usa **z-index alto** para não ficar atrás da sidebar.
+  - UX (Boards): modal **Editar Board** agora permite **reordenar etapas via drag-and-drop** (sem libs externas).
 
 ## 24/12/2025
 

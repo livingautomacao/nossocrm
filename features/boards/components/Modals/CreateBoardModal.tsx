@@ -79,6 +79,8 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
   const [selectedTemplate, setSelectedTemplate] = useState<BoardTemplateType | ''>('');
   const [stages, setStages] = useState<BoardStage[]>([]);
   const [isLifecycleModalOpen, setIsLifecycleModalOpen] = useState(false);
+  const [draggingStageId, setDraggingStageId] = useState<string | null>(null);
+  const [dragOverStageId, setDragOverStageId] = useState<string | null>(null);
 
   React.useEffect(() => {
     if (isOpen) {
@@ -137,6 +139,23 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
 
   const handleUpdateStage = (id: string, updates: Partial<BoardStage>) => {
     setStages(stages.map(s => s.id === id ? { ...s, ...updates } : s));
+  };
+
+  /**
+   * UX: allow reordering stages by drag-and-drop.
+   * No external deps: uses HTML5 drag events.
+   */
+  const moveStage = (fromId: string, toId: string) => {
+    if (fromId === toId) return;
+    setStages(prev => {
+      const fromIndex = prev.findIndex(s => s.id === fromId);
+      const toIndex = prev.findIndex(s => s.id === toId);
+      if (fromIndex < 0 || toIndex < 0) return prev;
+      const next = [...prev];
+      const [moved] = next.splice(fromIndex, 1);
+      next.splice(toIndex, 0, moved);
+      return next;
+    });
   };
 
   const handleTemplateSelect = (template: BoardTemplateType | '') => {
@@ -419,11 +438,47 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
                   {stages.map((stage, index) => (
                     <div
                       key={stage.id}
-                      className="p-4 bg-slate-50 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 transition-colors"
+                      className={`p-4 bg-slate-50 dark:bg-white/5 rounded-xl border transition-colors ${
+                        dragOverStageId === stage.id
+                          ? 'border-primary-500/60 ring-2 ring-primary-500/20'
+                          : 'border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20'
+                      }`}
+                      onDragOver={(e) => {
+                        // Required to allow dropping.
+                        e.preventDefault();
+                        if (draggingStageId) setDragOverStageId(stage.id);
+                      }}
+                      onDragLeave={() => {
+                        if (dragOverStageId === stage.id) setDragOverStageId(null);
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        const fromId = e.dataTransfer.getData('text/stage-id');
+                        if (fromId) moveStage(fromId, stage.id);
+                        setDraggingStageId(null);
+                        setDragOverStageId(null);
+                      }}
                     >
                       {/* Stage Header */}
                       <div className="flex items-center gap-3 mb-3">
-                        <GripVertical size={18} className="text-slate-400 cursor-grab flex-shrink-0" />
+                        <button
+                          type="button"
+                          draggable
+                          onDragStart={(e) => {
+                            setDraggingStageId(stage.id);
+                            e.dataTransfer.setData('text/stage-id', stage.id);
+                            e.dataTransfer.effectAllowed = 'move';
+                          }}
+                          onDragEnd={() => {
+                            setDraggingStageId(null);
+                            setDragOverStageId(null);
+                          }}
+                          className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-grab active:cursor-grabbing flex-shrink-0"
+                          aria-label={`Reordenar etapa: ${stage.label}`}
+                          title="Arraste para reordenar"
+                        >
+                          <GripVertical size={18} aria-hidden="true" />
+                        </button>
 
                         {/* Color Picker */}
                         <div className="relative flex-shrink-0">
