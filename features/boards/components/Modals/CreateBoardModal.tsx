@@ -36,6 +36,30 @@ function normalizeStageLabel(value: string) {
   return value.trim().toLowerCase().replace(/\s+/g, ' ');
 }
 
+function createDragPreviewFromElement(el: HTMLElement) {
+  const rect = el.getBoundingClientRect();
+  const clone = el.cloneNode(true) as HTMLElement;
+  clone.style.width = `${rect.width}px`;
+  clone.style.height = `${rect.height}px`;
+  clone.style.boxSizing = 'border-box';
+  clone.style.position = 'fixed';
+  clone.style.top = '-1000px';
+  clone.style.left = '-1000px';
+  clone.style.pointerEvents = 'none';
+  clone.style.opacity = '0.95';
+  clone.style.transform = 'scale(1.02)';
+  clone.style.borderRadius = '16px';
+  clone.style.zIndex = '999999';
+  document.body.appendChild(clone);
+  return () => {
+    try {
+      document.body.removeChild(clone);
+    } catch {
+      // noop
+    }
+  };
+}
+
 function guessWonLostStageIds(stages: BoardStage[], opts?: { wonLabel?: string; lostLabel?: string }) {
   const byLabel = new Map<string, string>();
   for (const s of stages) {
@@ -438,10 +462,13 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
                   {stages.map((stage, index) => (
                     <div
                       key={stage.id}
+                      data-stage-card="true"
                       className={`p-4 bg-slate-50 dark:bg-white/5 rounded-xl border transition-colors ${
                         dragOverStageId === stage.id
                           ? 'border-primary-500/60 ring-2 ring-primary-500/20'
-                          : 'border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20'
+                          : draggingStageId === stage.id
+                            ? 'border-primary-500/40 ring-2 ring-primary-500/10 opacity-70 shadow-lg'
+                            : 'border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20'
                       }`}
                       onDragOver={(e) => {
                         // Required to allow dropping.
@@ -468,6 +495,14 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
                             setDraggingStageId(stage.id);
                             e.dataTransfer.setData('text/stage-id', stage.id);
                             e.dataTransfer.effectAllowed = 'move';
+                            // Use the whole card as the drag "ghost" so it feels like you're dragging the item.
+                            const card = (e.currentTarget.closest('[data-stage-card="true"]') as HTMLElement | null);
+                            if (card) {
+                              const cleanup = createDragPreviewFromElement(card);
+                              // Ensure cleanup runs even if the browser doesn't fire dragend for some edge cases.
+                              window.setTimeout(cleanup, 0);
+                              e.dataTransfer.setDragImage(card, 24, 24);
+                            }
                           }}
                           onDragEnd={() => {
                             setDraggingStageId(null);

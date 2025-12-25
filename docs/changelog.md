@@ -31,6 +31,7 @@
   - UX (Modais): overlay de modal agora usa **z-index alto** para nunca ficar atrás da sidebar; “Refinar com IA” foi reduzido para não parecer página cheia.
   - UX (Deals): `DealDetailModal` agora **fecha ao clicar fora** (backdrop click) e usa **z-index alto** para não ficar atrás da sidebar.
   - UX (Boards): modal **Editar Board** agora permite **reordenar etapas via drag-and-drop** (sem libs externas).
+  - UX (Boards): drag-and-drop no modal **Editar Board** agora exibe **preview do item sendo arrastado** + estilo visual durante o drag (opacidade/sombra), evitando a sensação de “não está funcionando”.
 
 ## 24/12/2025
 
