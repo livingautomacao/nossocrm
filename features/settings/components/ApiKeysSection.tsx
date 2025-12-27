@@ -41,6 +41,7 @@ export const ApiKeysSection: React.FC = () => {
   const [testResult, setTestResult] = useState<{ ok: boolean; message: string } | null>(null);
   const [selectedBoardId, setSelectedBoardId] = useState<string>('');
   const [selectedToStageId, setSelectedToStageId] = useState<string>('');
+  const [identityMode, setIdentityMode] = useState<'phone' | 'email'>('phone');
   const [identityPhone, setIdentityPhone] = useState<string>('');
   const [identityEmail, setIdentityEmail] = useState<string>('');
   const [activityType, setActivityType] = useState<string>('NOTE');
@@ -216,6 +217,12 @@ export const ApiKeysSection: React.FC = () => {
     const stage = stagesForBoard.find((s) => s.id === selectedToStageId);
     return stage?.label || '';
   }, [selectedToStageId, stagesForBoard]);
+  const suggestedMark = useMemo<'won' | 'lost' | null>(() => {
+    if (!selectedToStageId) return null;
+    if (selectedBoard?.wonStageId && selectedToStageId === selectedBoard.wonStageId) return 'won';
+    if (selectedBoard?.lostStageId && selectedToStageId === selectedBoard.lostStageId) return 'lost';
+    return null;
+  }, [selectedBoard?.wonStageId, selectedBoard?.lostStageId, selectedToStageId]);
 
   const curlExample = useMemo(() => {
     const token = (apiKeyToken.trim() || createdToken?.trim() || '') || 'SUA_API_KEY';
@@ -232,10 +239,11 @@ export const ApiKeysSection: React.FC = () => {
       const phone = identityPhone.trim() || '+5511999999999';
       const email = identityEmail.trim() || 'teste@exemplo.com';
       const identityField =
-        identityPhone.trim()
+        identityMode === 'phone'
           ? `\"phone\": \"${phone.replaceAll('"', '\\"')}\",`
           : `\"email\": \"${email.replaceAll('"', '\\"')}\",`;
-      return `curl -X POST '/api/public/v1/deals/move-stage' \\\n+  -H 'Content-Type: application/json' \\\n+  -H 'X-Api-Key: ${token}' \\\n+  -d '{\n+    \"board_key_or_id\": \"${boardKeyOrId}\",\n+    ${identityField}\n+    \"to_stage_label\": \"${stageLabel.replaceAll('"', '\\"')}\"\n+  }'`;
+      const markField = suggestedMark ? `\n+    \"mark\": \"${suggestedMark}\",` : '';
+      return `curl -X POST '/api/public/v1/deals/move-stage' \\\n+  -H 'Content-Type: application/json' \\\n+  -H 'X-Api-Key: ${token}' \\\n+  -d '{\n+    \"board_key_or_id\": \"${boardKeyOrId}\",\n+    ${identityField}${markField}\n+    \"to_stage_label\": \"${stageLabel.replaceAll('"', '\\"')}\"\n+  }'`;
     }
     return `curl -X POST '${activitiesUrl}' \\\n+  -H 'Content-Type: application/json' \\\n+  -H 'X-Api-Key: ${token}' \\\n+  -d '{\n+    \"type\": \"${activityType}\",\n+    \"title\": \"${activityTitle.replaceAll('"', '\\"')}\",\n+    \"description\": \"Criada via integração\",\n+    \"date\": \"${new Date().toISOString()}\"\n+  }'`;
   }, [
@@ -247,10 +255,12 @@ export const ApiKeysSection: React.FC = () => {
     selectedBoardKey,
     selectedBoardId,
     apiKeyToken,
+    identityMode,
     identityPhone,
     identityEmail,
     selectedToStageId,
     selectedToStageLabel,
+    suggestedMark,
     activityTitle,
     activityType,
   ]);
@@ -342,9 +352,14 @@ export const ApiKeysSection: React.FC = () => {
         }
         const phone = identityPhone.trim();
         const email = identityEmail.trim().toLowerCase();
-        if (!phone && !email) {
-          addToast('Informe telefone ou email.', 'warning');
-          setActionTestResult({ ok: false, message: 'Informe telefone ou email.' });
+        if (identityMode === 'phone' && !phone) {
+          addToast('Informe telefone (E.164).', 'warning');
+          setActionTestResult({ ok: false, message: 'Informe telefone.' });
+          return;
+        }
+        if (identityMode === 'email' && !email) {
+          addToast('Informe email.', 'warning');
+          setActionTestResult({ ok: false, message: 'Informe email.' });
           return;
         }
         const res = await fetch(`/api/public/v1/deals/move-stage`, {
@@ -352,7 +367,8 @@ export const ApiKeysSection: React.FC = () => {
           headers: { 'Content-Type': 'application/json', 'X-Api-Key': token },
           body: JSON.stringify({
             board_key_or_id: selectedBoardKey || selectedBoardId,
-            ...(phone ? { phone } : { email }),
+            ...(identityMode === 'phone' ? { phone } : { email }),
+            ...(suggestedMark ? { mark: suggestedMark } : {}),
             to_stage_label: selectedToStageLabel,
           }),
         });
@@ -514,22 +530,48 @@ export const ApiKeysSection: React.FC = () => {
               {action === 'move_stage' && (
                 <div>
                   <div className="text-xs font-semibold text-slate-700 dark:text-slate-200 mb-1">Identidade do lead</div>
-                  <input
-                    value={identityPhone}
-                    onChange={(e) => setIdentityPhone(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white font-mono text-sm"
-                    placeholder="+5511999999999"
-                  />
-                  <div className="mt-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <button
+                      type="button"
+                      onClick={() => setIdentityMode('phone')}
+                      className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold border ${
+                        identityMode === 'phone'
+                          ? 'border-primary-500/50 bg-primary-500/10 text-primary-700 dark:text-primary-300'
+                          : 'border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10'
+                      }`}
+                    >
+                      Telefone
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIdentityMode('email')}
+                      className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold border ${
+                        identityMode === 'email'
+                          ? 'border-primary-500/50 bg-primary-500/10 text-primary-700 dark:text-primary-300'
+                          : 'border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10'
+                      }`}
+                    >
+                      Email
+                    </button>
+                  </div>
+
+                  {identityMode === 'phone' ? (
+                    <input
+                      value={identityPhone}
+                      onChange={(e) => setIdentityPhone(e.target.value)}
+                      className="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white font-mono text-sm"
+                      placeholder="+5511999999999"
+                    />
+                  ) : (
                     <input
                       value={identityEmail}
                       onChange={(e) => setIdentityEmail(e.target.value)}
                       className="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white"
-                      placeholder="email@exemplo.com (opcional)"
+                      placeholder="email@exemplo.com"
                     />
-                  </div>
+                  )}
                   <div className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
-                    Informe <strong>telefone</strong> (E.164) ou <strong>email</strong>. No board deve existir só 1 deal aberto para essa identidade.
+                    No board deve existir só 1 deal aberto para essa identidade.
                   </div>
                 </div>
               )}

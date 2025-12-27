@@ -81,6 +81,8 @@
   - DX: `move-stage` agora aceita `to_stage_label` (além de `to_stage_id`) e resolve a etapa automaticamente dentro do board do deal.
   - DX: endpoint “sem UUID” para automações agora é `POST /api/public/v1/deals/move-stage` (board + phone/email + `to_stage_label`). (Mantido também `POST /api/public/v1/deals/move-stage-by-identity` por compatibilidade.)
   - Fix: mover para etapa **Ganho/Perdido** via API agora marca o deal como **ganho/perdido de verdade** (`is_won`/`is_lost` + `closed_at`) quando a etapa destino for a etapa final configurada do board.
+  - Melhoria: `POST /api/public/v1/deals/move-stage` (e variantes) agora aceita `mark: "won"|"lost"` para marcar ganho/perdido **explicitamente**, sem depender da etapa final configurada do board.
+  - UX: no assistente de API, a identidade do lead agora é **telefone por padrão** (email via toggle) e, ao selecionar etapa de **Ganho/Perdido** configurada no board, o wizard adiciona `mark` automaticamente no request.
   - UX: seletor de etapas no assistente mostra apenas o **nome da etapa** (sem sufixo de UUID).
   - UX: em **Chaves existentes**, agora é possível **excluir** chaves **revogadas** (com confirmação).
   - UX (produto): o assistente agora usa dados do próprio app (boards/deals/stages) para montar o cURL **com valores reais** (wizard dinâmico), e a **API key virou independente do wizard** (colar/validar chave é opcional e fica só em memória).
