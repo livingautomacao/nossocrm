@@ -270,7 +270,8 @@ export const useBoardsController = () => {
     });
     // Note: Removed setContext from dependencies - it has internal guards to prevent loops
     // Note: Removed clearContext cleanup to prevent infinite loop with AIContext default setter
-  }, [activeBoard, deals, statusFilter, ownerFilter, searchTerm, dateRange]);
+    // Dependencies usam primitivos para evitar re-execução quando objeto muda mas valores são iguais
+  }, [activeBoard, deals, statusFilter, ownerFilter, searchTerm, dateRange.start, dateRange.end]);
 
   // Get lifecycle stages from CRM context for automations
   const { lifecycleStages } = useCRM();
@@ -435,7 +436,20 @@ export const useBoardsController = () => {
       }
       return deal;
     });
-  }, [deals, searchTerm, ownerFilter, dateRange, statusFilter, profile]);
+  // Dependencies usam primitivos específicos ao invés de objetos completos
+  // Isso evita re-execução quando propriedades não-utilizadas mudam
+  }, [
+    deals,
+    searchTerm,
+    ownerFilter,
+    dateRange.start,      // Apenas as propriedades usadas do dateRange
+    dateRange.end,
+    statusFilter,
+    profile?.id,          // Apenas as propriedades usadas do profile
+    profile?.nickname,
+    profile?.first_name,
+    profile?.avatar_url,
+  ]);
 
   // Drag & Drop Handlers
   const handleDragStart = (e: React.DragEvent, id: string, title: string) => {
