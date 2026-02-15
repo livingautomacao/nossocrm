@@ -28,11 +28,11 @@ const getAvatarProps = (email: string) => {
     const initials = email.substring(0, 2).toUpperCase();
     const colors = [
         'from-violet-500 to-purple-600',
-        'from-blue-500 to-cyan-500',
+        'from-amber-500 to-yellow-500',
         'from-emerald-500 to-teal-500',
         'from-orange-500 to-amber-500',
         'from-pink-500 to-rose-500',
-        'from-indigo-500 to-blue-500',
+        'from-orange-500 to-amber-500',
     ];
     const colorIndex = email.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length;
     return { initials, gradient: colors[colorIndex] };
@@ -177,10 +177,10 @@ export const UsersPage: React.FC = () => {
 
             // Force refresh of active invites and ensure state updates
             await fetchActiveInvites();
-            
+
             // Small delay to ensure state propagation
             await new Promise(resolve => setTimeout(resolve, 100));
-            
+
             addToast('Novo link gerado!', 'success');
         } catch (err: any) {
             setError(err.message || 'Erro ao gerar link');

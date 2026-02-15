@@ -345,7 +345,7 @@ export interface Board {
 
 // Estágios padrão do board de vendas
 export const DEFAULT_BOARD_STAGES: BoardStage[] = [
-  { id: DealStatus.NEW, label: 'Novas Oportunidades', color: 'bg-blue-500' },
+  { id: DealStatus.NEW, label: 'Novas Oportunidades', color: 'bg-primary-500' },
   { id: DealStatus.CONTACTED, label: 'Contatado', color: 'bg-yellow-500' },
   {
     id: DealStatus.PROPOSAL,

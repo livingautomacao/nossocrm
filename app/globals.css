@@ -11,23 +11,57 @@
   --font-display: 'Space Grotesk', sans-serif;
   --font-serif: 'Cinzel', serif;
 
-  /* Primary Colors */
-  --color-primary-50: #f0f9ff;
-  --color-primary-100: #e0f2fe;
-  --color-primary-200: #bae6fd;
-  --color-primary-300: #7dd3fc;
-  --color-primary-400: #38bdf8;
-  --color-primary-500: #0ea5e9;
-  --color-primary-600: #0284c7;
-  --color-primary-700: #0369a1;
-  --color-primary-800: #075985;
-  --color-primary-900: #0c4a6e;
+  /* Primary Colors - Gold/Amber */
+  --color-primary-50: #fffbeb;
+  --color-primary-100: #fef3c7;
+  --color-primary-200: #fde68a;
+  --color-primary-300: #fcd34d;
+  --color-primary-400: #fbbf24;
+  --color-primary-500: #f59e0b;
+  --color-primary-600: #d97706;
+  --color-primary-700: #b45309;
+  --color-primary-800: #92400e;
+  --color-primary-900: #78350f;
 
   /* Dark Theme Colors */
   --color-dark-bg: #020617;
   --color-dark-card: #0f172a;
   --color-dark-border: #1e293b;
   --color-dark-hover: #334155;
+
+  /* Force Blue/Sky/Indigo to Gold */
+  --color-blue-50: var(--color-primary-50);
+  --color-blue-100: var(--color-primary-100);
+  --color-blue-200: var(--color-primary-200);
+  --color-blue-300: var(--color-primary-300);
+  --color-blue-400: var(--color-primary-400);
+  --color-blue-500: var(--color-primary-500);
+  --color-blue-600: var(--color-primary-600);
+  --color-blue-700: var(--color-primary-700);
+  --color-blue-800: var(--color-primary-800);
+  --color-blue-900: var(--color-primary-900);
+
+  --color-sky-50: var(--color-primary-50);
+  --color-sky-100: var(--color-primary-100);
+  --color-sky-200: var(--color-primary-200);
+  --color-sky-300: var(--color-primary-300);
+  --color-sky-400: var(--color-primary-400);
+  --color-sky-500: var(--color-primary-500);
+  --color-sky-600: var(--color-primary-600);
+  --color-sky-700: var(--color-primary-700);
+  --color-sky-800: var(--color-primary-800);
+  --color-sky-900: var(--color-primary-900);
+
+  --color-indigo-50: var(--color-primary-50);
+  --color-indigo-100: var(--color-primary-100);
+  --color-indigo-200: var(--color-primary-200);
+  --color-indigo-300: var(--color-primary-300);
+  --color-indigo-400: var(--color-primary-400);
+  --color-indigo-500: var(--color-primary-500);
+  --color-indigo-600: var(--color-primary-600);
+  --color-indigo-700: var(--color-primary-700);
+  --color-indigo-800: var(--color-primary-800);
+  --color-indigo-900: var(--color-primary-900);
 }
 
 /* ========================================
@@ -109,7 +143,8 @@ svg.lucide {
 }
 
 /* Avoid accidental horizontal scroll on small screens (mobile/tablet). */
-html, body {
+html,
+body {
   overflow-x: hidden;
 }
 
@@ -255,23 +290,23 @@ body {
 }
 
 .focus-visible-ring:focus-visible {
-  outline: 2px solid #2563eb;
+  outline: 2px solid #f59e0b;
   outline-offset: 2px;
 }
 
 .dark .focus-visible-ring:focus-visible {
-  outline-color: #60a5fa;
+  outline-color: #fbbf24;
 }
 
 .focus-visible-high:focus-visible {
-  outline: 3px solid #1d4ed8;
+  outline: 3px solid #d97706;
   outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.3);
 }
 
 .dark .focus-visible-high:focus-visible {
-  outline-color: #93c5fd;
-  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.3);
+  outline-color: #fcd34d;
+  box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.3);
 }
 
 /* Skip link styling */
@@ -290,7 +325,7 @@ body {
 
 .skip-link:focus {
   left: 0;
-  outline: 3px solid #60a5fa;
+  outline: 3px solid #fbbf24;
   outline-offset: 2px;
 }
 
@@ -369,21 +404,26 @@ body {
 
 /* Tamanhos de placeholder para diferentes tipos de elementos */
 .cv-row-sm {
-  contain-intrinsic-size: auto 40px; /* Linhas pequenas (compactas) */
+  contain-intrinsic-size: auto 40px;
+  /* Linhas pequenas (compactas) */
 }
 
 .cv-row-md {
-  contain-intrinsic-size: auto 60px; /* Linhas médias (padrão) */
+  contain-intrinsic-size: auto 60px;
+  /* Linhas médias (padrão) */
 }
 
 .cv-row-lg {
-  contain-intrinsic-size: auto 80px; /* Linhas grandes (com mais conteúdo) */
+  contain-intrinsic-size: auto 80px;
+  /* Linhas grandes (com mais conteúdo) */
 }
 
 .cv-card {
-  contain-intrinsic-size: auto 120px; /* Cards (deal cards, contact cards) */
+  contain-intrinsic-size: auto 120px;
+  /* Cards (deal cards, contact cards) */
 }
 
 .cv-card-lg {
-  contain-intrinsic-size: auto 200px; /* Cards grandes (com preview) */
+  contain-intrinsic-size: auto 200px;
+  /* Cards grandes (com preview) */
 }

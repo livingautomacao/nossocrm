@@ -80,11 +80,11 @@ export const ProfilePage: React.FC = () => {
     const gradient = useMemo(() => {
         const colors = [
             'from-violet-500 to-purple-600',
-            'from-blue-500 to-cyan-500',
+            'from-amber-500 to-yellow-500',
             'from-emerald-500 to-teal-500',
             'from-orange-500 to-amber-500',
             'from-pink-500 to-rose-500',
-            'from-indigo-500 to-blue-500',
+            'from-orange-500 to-amber-500',
         ];
         const email = profile?.email || '';
         const colorIndex = email.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length;

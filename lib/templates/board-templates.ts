@@ -38,7 +38,7 @@ export const BOARD_TEMPLATES: Record<BoardTemplateType, BoardTemplate> = {
     linkedLifecycleStage: 'LEAD',
     tags: ['SDR', 'Qualificação', 'Outbound'],
     stages: [
-      { label: 'Novos Leads', color: 'bg-blue-500', linkedLifecycleStage: 'LEAD' },
+      { label: 'Novos Leads', color: 'bg-primary-500', linkedLifecycleStage: 'LEAD' },
       { label: 'Contatado', color: 'bg-yellow-500', linkedLifecycleStage: 'LEAD' },
       { label: 'Qualificando', color: 'bg-purple-500', linkedLifecycleStage: 'LEAD' },
       { label: 'Qualificado (MQL)', color: 'bg-green-500', linkedLifecycleStage: 'MQL' },
@@ -65,7 +65,7 @@ export const BOARD_TEMPLATES: Record<BoardTemplateType, BoardTemplate> = {
     linkedLifecycleStage: 'MQL',
     tags: ['Vendas', 'CRM', 'Fechamento'],
     stages: [
-      { label: 'Descoberta', color: 'bg-blue-500', linkedLifecycleStage: 'MQL' },
+      { label: 'Descoberta', color: 'bg-primary-500', linkedLifecycleStage: 'MQL' },
       { label: 'Proposta', color: 'bg-purple-500', linkedLifecycleStage: 'PROSPECT' },
       { label: 'Negociação', color: 'bg-orange-500', linkedLifecycleStage: 'PROSPECT' },
       { label: 'Ganho', color: 'bg-green-500', linkedLifecycleStage: 'CUSTOMER' },
@@ -95,7 +95,7 @@ export const BOARD_TEMPLATES: Record<BoardTemplateType, BoardTemplate> = {
     linkedLifecycleStage: 'CUSTOMER',
     tags: ['CS', 'Implementação', 'Sucesso'],
     stages: [
-      { label: 'Kickoff', color: 'bg-blue-500', linkedLifecycleStage: 'CUSTOMER' },
+      { label: 'Kickoff', color: 'bg-primary-500', linkedLifecycleStage: 'CUSTOMER' },
       { label: 'Implementação', color: 'bg-purple-500', linkedLifecycleStage: 'CUSTOMER' },
       { label: 'Treinamento', color: 'bg-yellow-500', linkedLifecycleStage: 'CUSTOMER' },
       { label: 'Go Live', color: 'bg-green-500', linkedLifecycleStage: 'CUSTOMER' },
